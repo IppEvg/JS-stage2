@@ -24,6 +24,7 @@ header {
     background-color: rgb(255, 208, 208);
     color: rgb(55, 36, 70);
     transition: 1500ms;
+    position: relative;
 }
 
 :hover.cart-button {
@@ -70,11 +71,44 @@ p {
     transform: scale3d(1.05, 1.01, 1.02);
 }
 
+:hover.box_basket-container {
+    color: black;
+}
+
 .goods-item {
     width: 31%;
     background-color: rgb(219, 193, 193);
+    color: black;
     margin: 5px;
     padding: 5px;
     display: flex;
     flex-direction: column;
+}
+
+.basket-container {
+    position: absolute;
+    top: 30px;
+    right: 0px;
+    display: none;
+    width: max-content;
+    height: max-content;
+    background-color: rgb(255, 208, 208);
+}
+
+.box_basket-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 500px;
+    max-height: 800px;
+}
+
+.box_basket-container>.goods-item {
+    width: 150px;
+    height: 170px;
+}
+
+.quantity {
+    color: black;
 }

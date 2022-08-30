@@ -17,6 +17,23 @@ header {
     justify-content: space-around;
     flex-wrap: wrap;
 }
+form{
+    padding: 3px;
+     border: 1px solid rgb(168, 53, 53);
+}
+.btn-search{
+    padding: 2px 12px;
+    border: 1px solid rgb(55, 36, 70);
+    background-color: rgb(255, 208, 208);
+    color: rgb(55, 36, 70);
+    transition: 1500ms;
+    position: relative;
+}
+:hover.btn-search {
+    border: 1px solid rgb(255, 208, 208);
+    background-color: rgb(55, 36, 70);
+    color: rgb(255, 208, 208);
+}
 
 .cart-button {
     padding: 8px 12px;
@@ -24,6 +41,7 @@ header {
     background-color: rgb(255, 208, 208);
     color: rgb(55, 36, 70);
     transition: 1500ms;
+    position: relative;
 }
 
 :hover.cart-button {
@@ -70,11 +88,44 @@ p {
     transform: scale3d(1.05, 1.01, 1.02);
 }
 
-.goods-item {
+:hover.box_basket-container {
+    color: black;
+}
+
+.product-item {
     width: 31%;
     background-color: rgb(219, 193, 193);
+    color: black;
     margin: 5px;
     padding: 5px;
     display: flex;
     flex-direction: column;
+}
+
+.basket-container {
+    position: absolute;
+    top: 30px;
+    right: 0px;
+    display: none;
+    width: max-content;
+    height: max-content;
+    background-color: rgb(255, 208, 208);
+}
+
+.box_basket-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 300px;
+    max-height: 800px;
+}
+
+.box_basket-container>.goods-item {
+    width: 150px;
+    height: 170px;
+}
+
+.quantity {
+    color: black;
 }

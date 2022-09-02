@@ -4,12 +4,14 @@ const app = new Vue({
     el: '#app',
     data: {
         catalogUrl: 'catalogData.json',
+        cartUrl: 'getBasket.json',
         goods: [],
         filtered: [],
-        imgCatalog: `pictures/Ноутбук.jpg`,//не удалось привязать картинку таким или похожим способом:`pictures/${this[product].product_name}.jpg`
+        imgCatalog: `pictures/Ноутбук.jpg`,//не удалось привязать картинку таким или похожим способом:`pictures / ${ this[product].product_name }.jpg`
         userSearch: '',
         show: false,
         goodsOfBasket: [],
+        error: false
     },
     methods: {
         filter() {
@@ -21,47 +23,61 @@ const app = new Vue({
                 .then(result => result.json())
                 .catch(error => {
                     console.log('error');
+                    this.error = true;
                 })
         },
-        addProduct(product) {
-            console.log(product.id_product);
-            this.goodsOfBasket.push(product);
+        addProduct(item) {
+            this.getJson(`${API}addToBasket.json`)
+                .then(data => {
+                    if (data.result === 1) {
+                        let find = this.goodsOfBasket.find(el => item.id_product == el.id_product);
+                        if (find) {
+                            find.quantity++;
+                        } else {
+                            this.$set(item, 'quantity', 1);
+                            this.goodsOfBasket.push(item);
+                        }
+                    }
+                })
         },
-        showBasket() {
-            let hiddenContainerOfButton = document.querySelector('.basket-container');
-            if (hiddenContainerOfButton.style.display == 'none') {
-                hiddenContainerOfButton.style.display = 'block';
-            } else if (hiddenContainerOfButton.style.display = 'block') {
-                hiddenContainerOfButton.style.display = 'none';
-            }
+        delProduct(product) {
+            this.getJson(`${API}deleteFromBasket.json`)
+                .then(data => {
+                    if (data.result === 1) {
+                        if (product.quantity > 1) {
+                            product.quantity--;
+                        } else {
+                            this.goodsOfBasket.splice(this.goodsOfBasket.indexOf(product), 1);
+                        }
+                    }
+                })
         }
-        // countSummOfGoods() {
-        //     let summ = 0;
-        //     for (let product of this.goodsOfBasket) {
-        //         summ += product.price * product.quantity;
-        //     }
-        //     let paragraphSumm = document.createElement('p');
-        //     let boxBasket = document.querySelector('.box_basket-container');
-        //     boxBasket.appendChild(paragraphSumm);
-        //     paragraphSumm.innerText = `Итого: ${summ} руб.`;
-        // }
     },
 
+    computed: {
+        getSumm(product) {
+            let summ = 0;
+            for (let product of this.goodsOfBasket) {
+                summ += product.price * product.quantity;
+            }
+            return summ;
+        }
+    },
 
     mounted() {
-        this.getJson(`${API + this.catalogUrl}`)
+        this.getJson(`${API + this.catalogUrl} `)
             .then(data => {
                 for (let el of data) {
                     this.goods.push(el);
+                    this.filtered.push(el);
                 }
-            }),
-            this.filter()
-        // this.getJson(`${API}getBasket.json`)
-        //     .then(data => {
-        //         for (let el of data.contents) {
-        //             this.goodsOfBasket.push(el);
-        //         }
-        //     })
+            })
+        this.getJson(`${API + this.cartUrl}`)
+            .then(data => {
+                for (let el of data.contents) {
+                    this.goodsOfBasket.push(el);
+                }
+            })
     }
 })
 
@@ -121,7 +137,7 @@ const app = new Vue({
 //         this.clickOnBasketButton();
 //     }
 //     _getProducts() {
-//         return fetch(`${API}catalogData.json`)
+//         return fetch(`${ API } catalogData.json`)
 //             .then(result => result.json())
 //             .catch(error => {
 //                 console.log('error');
@@ -161,7 +177,7 @@ const app = new Vue({
 
 //     }
 //     _getBasket() {
-//         return fetch(`${API}getBasket.json`)
+//         return fetch(`${ API } getBasket.json`)
 //             .then(result => result.json())
 //             .catch(error => {
 //                 console.log('error');
@@ -183,7 +199,7 @@ const app = new Vue({
 //         let paragraphSumm = document.createElement('p');
 //         let boxBasket = document.querySelector('.box_basket-container');
 //         boxBasket.appendChild(paragraphSumm);
-//         paragraphSumm.innerText = `Итого: ${summ} руб.`;
+//         paragraphSumm.innerText = `Итого: ${ summ } руб.`;
 //     }
 // }
 
@@ -192,10 +208,10 @@ const app = new Vue({
 //         this.id = product.id_product;
 //         this.product_name = product.product_name;
 //         this.price = product.price;
-//         this.img = `pictures/${this.product_name}.jpg`;
+//         this.img = `pictures / ${ this.product_name }.jpg`;
 //     }
 //     render() {
-//         return `<div id = '${this.id} 'class="goods-item"><img class= 'pictures' src='${this.img}'><h3>${this.product_name}</h3><p>${this.price}</p> <button class = 'button_buy'> КУПИТЬ </button>`
+//         return `< div id = '${this.id} 'class="goods-item" > <img class='pictures' src='${this.img}'><h3>${this.product_name}</h3><p>${this.price}</p> <button class='button_buy'> КУПИТЬ </button>`
 //     }
 // }
 // class ProductItemOfBasket extends ProductItem {

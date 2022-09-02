@@ -1,5 +1,5 @@
 .container {
-    max-width: 1140px;
+    max-width: 1440px;
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -17,11 +17,19 @@ header {
     justify-content: space-around;
     flex-wrap: wrap;
 }
-form{
+
+form {
     padding: 3px;
-     border: 1px solid rgb(168, 53, 53);
+    border: 1px solid rgb(168, 53, 53);
+    transition-duration: 1s;
 }
-.btn-search{
+
+form:hover {
+    box-shadow: 0px 0px 5px 5px rgba(168, 53, 53, 0.418);
+    transition-property: box-shadow;
+}
+
+.btn-search {
     padding: 2px 12px;
     border: 1px solid rgb(55, 36, 70);
     background-color: rgb(255, 208, 208);
@@ -29,7 +37,8 @@ form{
     transition: 1500ms;
     position: relative;
 }
-:hover.btn-search {
+
+.btn-search:hover {
     border: 1px solid rgb(255, 208, 208);
     background-color: rgb(55, 36, 70);
     color: rgb(255, 208, 208);
@@ -44,17 +53,18 @@ form{
     position: relative;
 }
 
-:hover.cart-button {
+.cart-button:hover {
     border: 1px solid rgb(255, 208, 208);
     background-color: rgb(55, 36, 70);
-    color: rgb(255, 208, 208);
+    color: rgb(187, 64, 64);
 }
 
 .pictures {
     max-width: 96%;
     margin: 2%;
+    height: 250px;
     flex-grow: 1;
-    height: 400px;
+    max-height: 400px;
 }
 
 h3,
@@ -81,19 +91,19 @@ p {
     transition: 500ms;
 }
 
-:hover.button_buy {
+.button_buy:hover {
     border: 1px solid rgb(55, 36, 70);
     background-color: rgb(255, 208, 208);
     color: rgb(55, 36, 70);
     transform: scale3d(1.05, 1.01, 1.02);
 }
 
-:hover.box_basket-container {
+.box_basket-container:hover {
     color: black;
 }
 
 .product-item {
-    width: 31%;
+    width: 23%;
     background-color: rgb(219, 193, 193);
     color: black;
     margin: 5px;
@@ -104,12 +114,11 @@ p {
 
 .basket-container {
     position: absolute;
-    top: 30px;
-    right: 0px;
-    display: none;
+    top: 90px;
+    right: 7px;
     width: max-content;
     height: max-content;
-    background-color: rgb(255, 208, 208);
+    background-color: rgba(255, 208, 208, 0.897);
 }
 
 .box_basket-container {
@@ -117,15 +126,43 @@ p {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 300px;
-    max-height: 800px;
+    max-width: 230px;
+    border: 1px solid rgba(58, 52, 52, 0.315);
+    margin: 1px;
+    position: relative;
 }
 
 .box_basket-container>.goods-item {
-    width: 150px;
-    height: 170px;
+    width: 70%;
+    height: 70%;
+    padding: 5% 15% 5% 5%;
 }
 
 .quantity {
     color: black;
+}
+
+.del {
+    position: absolute;
+    right: 2%;
+    top: 2%;
+    background-color: rgb(58, 52, 52);
+    color: rgb(219, 193, 193);
+    width: 11%;
+    height: 11%;
+    max-width: 50px;
+    max-height: 50px;
+    text-align: center;
+    border: none;
+}
+
+.del:hover {
+    transform: skew(5deg, -5deg);
+}
+
+.alarm {
+    color: rgb(61, 13, 151);
+    size: 30px;
+    text-align: center;
+    margin: 20vh;
 }

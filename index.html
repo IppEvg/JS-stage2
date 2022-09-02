@@ -11,51 +11,28 @@
 
 <body>
     <div id="app">
-        <header>
+        <error v-if="error"></error>
+        <header v-if="!error">
             <nav class="container">
                 <a class="logo" href="index.html">
                     <img src="Pictures/Logo.svg" alt="logo">
                 </a>
-
-                <form action="#" class="search-form">
-                    <input type="text" class="search-field" v-model="userSearch" @input="filter">
-                    <button class="btn-search" type="submit" @click="filter">
-                        Фильтр
-                    </button>
-                </form>
-                <button class="cart-button " type="button" @click="showBasket">Корзина
-                    <div class="basket-container">
-                        <div class="box_basket-container" v-for="product of goodsOfBasket">
-                            <img :src='imgCatalog' alt="good image" class="pictures">
-                            <h3>{{product.product_name}}</h3>
-                            <p>{{product.price}}</p>
-                            <!-- <p class="quantity">{{product.quantity}}</p>
-                            <p class="summ">Итого:{{summ}} руб.</p> -->
-                        </div>
-                    </div>
-                </button>
+                <sort></sort>
+                <button class="cart-button " type="button" @click="show = !show">Корзина</button>
+                <basket :img="imgCatalog" :products="goodsOfBasket" @delete="delProduct" :visibility="$root.show">
+                </basket>
             </nav>
         </header>
-        <main>
-            <div class="products container">
-                <div class="product-item" v-if="filtered.length==0" v-for="product of goods">
-                    <img :src='imgCatalog' alt="good image" class="pictures">
-                    <h3>{{product.product_name}}</h3>
-                    <p>{{product.price}}</p>
-                    <button class='button_buy' @click="addProduct(product)"> КУПИТЬ </button>
-                </div>
-                <div class="product-item" v-if="filtered.length>0" v-for="product of filtered">
-                    <img :src='imgCatalog' alt="good image" class="pictures">
-                    <h3>{{product.product_name}}</h3>
-                    <p>{{product.price}}</p>
-                    <button class='button_buy' @click="addProduct(product)"> КУПИТЬ </button>
-                </div>
-            </div>
+        <main v-if="!error">
 
-    </div>
-    </main>
+            <products :products="filtered" :img="imgCatalog" @add-product="addProduct"></products>
+        </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8"></script>
+    <script src="ErrorComponent.js"></script>
+    <script src="FilterComponent.js"></script>
+    <script src="CardComponent.js"></script>
+    <script src="BasketComponent.js"></script>
     <script src="script.js"></script>
 </body>
 

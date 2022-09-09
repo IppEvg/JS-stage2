@@ -3,13 +3,15 @@ const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-a
 const app = new Vue({
     el: '#app',
     data: {
-        catalogUrl: 'catalogData.json',
+        catalogUrl: 'db/products.json',
+        cartUrl: 'db/userCart.json',
         goods: [],
         filtered: [],
-        imgCatalog: `pictures/Ноутбук.jpg`,//не удалось привязать картинку таким или похожим способом:`pictures/${this[product].product_name}.jpg`
+        imgCatalog: '',
         userSearch: '',
         show: false,
         goodsOfBasket: [],
+        error: false
     },
     methods: {
         filter() {
@@ -21,49 +23,121 @@ const app = new Vue({
                 .then(result => result.json())
                 .catch(error => {
                     console.log('error');
+                    this.error = true;
                 })
         },
-        addProduct(product) {
-            console.log(product.id_product);
-            this.goodsOfBasket.push(product);
+        putJson(url, data) {
+            return fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(result => result.json())
+                .catch(error => {
+                    this.error = true;
+                })
         },
-        showBasket() {
-            let hiddenContainerOfButton = document.querySelector('.basket-container');
-            if (hiddenContainerOfButton.style.display == 'none') {
-                hiddenContainerOfButton.style.display = 'block';
-            } else if (hiddenContainerOfButton.style.display = 'block') {
-                hiddenContainerOfButton.style.display = 'none';
+        postJson(url, data) {
+            return fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(result => result.json())
+                .catch(error => {
+                    console.log('error');
+                    this.error = true;
+                })
+        },
+        delJson(url, data) {
+            return fetch(url, {
+                method: "DELETE",
+                headers: {
+                    "content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(result => result.json())
+                .catch(error => {
+                    this.error = true;
+                })
+        },
+
+        addProduct(item) {
+            let find = this.goodsOfBasket.find(el => el.id_product === item.id_product);
+            if (find) {
+                this.putJson(`/api/cart/${find.id_product}/${find.product_name}`, { quantity: 1 })
+                    .then(data => {
+                        if (data.result) {
+                            find.quantity++;
+                        }
+                    })
+            } else {
+                const prod = Object.assign({ quantity: 1 }, item);
+                item.imgPath = `Pictures/${item.id_product}.jpg`;
+                this.postJson(`/api/cart`, prod)
+                    .then(data => {
+                        if (data.result) {
+                            this.goodsOfBasket.push(prod);
+                        }
+                    })
+            }
+        },
+        delProduct(item) {
+            if (item.quantity > 1) {
+                this.putJson(`/api/cart/${item.id_product}/${item.product_name}`, { quantity: -1 })
+                    .then(data => {
+                        if (data.result) {
+                            item.quantity--;
+                        }
+                    })
+            } else {
+                this.delJson(`/api/cart/${item.id_product}`, item)
+                    .then(data => {
+                        if (data.result) {
+                            this.goodsOfBasket.splice(this.goodsOfBasket.indexOf(item), 1)
+                        } else {
+                            console.log('error');
+                        }
+                    })
             }
         }
-        // countSummOfGoods() {
-        //     let summ = 0;
-        //     for (let product of this.goodsOfBasket) {
-        //         summ += product.price * product.quantity;
-        //     }
-        //     let paragraphSumm = document.createElement('p');
-        //     let boxBasket = document.querySelector('.box_basket-container');
-        //     boxBasket.appendChild(paragraphSumm);
-        //     paragraphSumm.innerText = `Итого: ${summ} руб.`;
-        // }
     },
 
 
+    computed: {
+        getSumm(product) {
+            let summ = 0;
+            for (let product of this.goodsOfBasket) {
+                summ += product.price * product.quantity;
+            }
+            return summ;
+        }
+    },
+
     mounted() {
-        this.getJson(`${API + this.catalogUrl}`)
+        this.getJson(`/api/products`)
             .then(data => {
                 for (let el of data) {
+                    el.imgPath = `Pictures/${el.id_product}.jpg`;
                     this.goods.push(el);
+                    this.filtered.push(el);
                 }
-            }),
-            this.filter()
-        // this.getJson(`${API}getBasket.json`)
-        //     .then(data => {
-        //         for (let el of data.contents) {
-        //             this.goodsOfBasket.push(el);
-        //         }
-        //     })
+            })
+        this.getJson(`/api/cart`)
+            .then(data => {
+                for (let el of data.contents) {
+                    el.imgPath = `Pictures/${el.id_product}.jpg`;
+                    this.goodsOfBasket.push(el);
+                }
+            })
     }
-})
+});
+
 
 
 
@@ -121,7 +195,7 @@ const app = new Vue({
 //         this.clickOnBasketButton();
 //     }
 //     _getProducts() {
-//         return fetch(`${API}catalogData.json`)
+//         return fetch(`${ API } catalogData.json`)
 //             .then(result => result.json())
 //             .catch(error => {
 //                 console.log('error');
@@ -161,7 +235,7 @@ const app = new Vue({
 
 //     }
 //     _getBasket() {
-//         return fetch(`${API}getBasket.json`)
+//         return fetch(`${ API } getBasket.json`)
 //             .then(result => result.json())
 //             .catch(error => {
 //                 console.log('error');
@@ -183,7 +257,7 @@ const app = new Vue({
 //         let paragraphSumm = document.createElement('p');
 //         let boxBasket = document.querySelector('.box_basket-container');
 //         boxBasket.appendChild(paragraphSumm);
-//         paragraphSumm.innerText = `Итого: ${summ} руб.`;
+//         paragraphSumm.innerText = `Итого: ${ summ } руб.`;
 //     }
 // }
 
@@ -192,10 +266,10 @@ const app = new Vue({
 //         this.id = product.id_product;
 //         this.product_name = product.product_name;
 //         this.price = product.price;
-//         this.img = `pictures/${this.product_name}.jpg`;
+//         this.img = `pictures / ${ this.product_name }.jpg`;
 //     }
 //     render() {
-//         return `<div id = '${this.id} 'class="goods-item"><img class= 'pictures' src='${this.img}'><h3>${this.product_name}</h3><p>${this.price}</p> <button class = 'button_buy'> КУПИТЬ </button>`
+//         return `< div id = '${this.id} 'class="goods-item" > <img class='pictures' src='${this.img}'><h3>${this.product_name}</h3><p>${this.price}</p> <button class='button_buy'> КУПИТЬ </button>`
 //     }
 // }
 // class ProductItemOfBasket extends ProductItem {
@@ -209,4 +283,3 @@ const app = new Vue({
 // }
 // let list = new ProductList();
 // let basket = new ProductsOfBasket();
-

@@ -1,0 +1,28 @@
+{
+    "contents": [
+        {
+            "quantity": 1,
+            "id_product": 4,
+            "product_name": "Футболка принт",
+            "price": 1400,
+            "imgPath": "Pictures/4.jpg",
+            "product_info": "Одежда повседневная"
+        },
+        {
+            "quantity": 1,
+            "id_product": 5,
+            "product_name": "Пиджак голубой",
+            "price": 4100,
+            "imgPath": "Pictures/5.jpg",
+            "product_info": "Одежда повседневная"
+        },
+        {
+            "quantity": 1,
+            "id_product": 3,
+            "product_name": "Худи черно-синее",
+            "price": 3800,
+            "imgPath": "Pictures/3.jpg",
+            "product_info": "Одежда повседневная"
+        }
+    ]
+}
